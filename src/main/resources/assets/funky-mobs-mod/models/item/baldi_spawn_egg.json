@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "funky-mobs-mod:item/baldi_spawn_egg"
+  }
+}
