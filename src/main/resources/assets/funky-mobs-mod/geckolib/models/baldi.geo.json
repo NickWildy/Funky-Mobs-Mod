@@ -1,5 +1,5 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.21.0",
 	"minecraft:geometry": [
 		{
 			"description": {
@@ -49,7 +49,7 @@
 				},
 				{
 					"name": "head",
-					"pivot": [2.5, 0, -1.5],
+					"pivot": [-0.09872, 40.0207, 0.32039],
 					"cubes": [
 						{
 							"origin": [0, 55, 1],
@@ -108,6 +108,11 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "held_item_hook",
+					"parent": "Left_arm",
+					"pivot": [-4, 21, 0.5]
 				},
 				{
 					"name": "Right_arm",

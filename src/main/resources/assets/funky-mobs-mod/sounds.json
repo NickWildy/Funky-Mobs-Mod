@@ -1,0 +1,26 @@
+{
+  "baldi_death": {
+    "subtitle": "sound.funky-mobs-mod.baldi_death",
+    "sounds": [
+      "funky-mobs-mod:baldi_death"
+    ]
+  },
+  "baldi_hurt": {
+    "subtitle": "sound.funky-mobs-mod.baldi_hurt",
+    "sounds": [
+      "funky-mobs-mod:baldi_hurt"
+    ]
+  },
+  "baldi_oh_hi": {
+    "subtitle": "sound.funky-mobs-mod.baldi_oh_hi",
+    "sounds": [
+      "funky-mobs-mod:baldi_oh_hi"
+    ]
+  },
+  "baldi_uh_oh": {
+    "subtitle": "sound.funky-mobs-mod.baldi_uh_oh",
+    "sounds": [
+      "funky-mobs-mod:baldi_uh_oh"
+    ]
+  }
+}

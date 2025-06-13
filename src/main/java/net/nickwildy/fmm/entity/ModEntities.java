@@ -11,7 +11,6 @@ import net.nickwildy.fmm.FunkyMobsMod;
 import net.nickwildy.fmm.entity.custom.BaldiEntity;
 
 public class ModEntities {
-    //private static RegistryKey<EntityType<BaldiEntity>> RegistryKey;
     public static final EntityType<BaldiEntity> BALDI = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(FunkyMobsMod.MOD_ID, "baldi"),
             EntityType.Builder.create(BaldiEntity::new, SpawnGroup.MONSTER)

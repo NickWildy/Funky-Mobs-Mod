@@ -1,3 +1,15 @@
 {
-  "item.funky-mobs-mod.baldi_spawn_egg": "Baldi Spawn Egg"
+  "item.funky-mobs-mod.baldi_spawn_egg": "Baldi Spawn Egg",
+  "item.funky-mobs-mod.ruler": "Ruler",
+
+  "entity.funky-mobs-mod.baldi": "Baldi",
+
+  "sound.funky-mobs-mod.baldi_death": "Baldi died",
+  "sound.funky-mobs-mod.baldi_hurt": "Baldi got hurt",
+  "sound.funky-mobs-mod.baldi_oh_hi": "Baldi says Oh Hi!",
+  "sound.funky-mobs-mod.baldi_uh_oh": "Baldi says uh huh",
+
+  "death.attack.slap": "%1$s got slapped to death!!!!",
+  "death.attack.slap.player": "%1$s got slapped to death!!!!",
+  "%1$s got slain by Baldi": "%1$s got slapped to death!!!!"
 }

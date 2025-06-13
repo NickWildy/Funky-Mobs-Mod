@@ -1,23 +1,28 @@
 package net.nickwildy.fmm.entity.custom;
 
-import net.minecraft.client.render.entity.model.ZombieEntityModel;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.nickwildy.fmm.FunkyMobsMod;
+import net.nickwildy.fmm.custom.ModDamageTypes;
+import net.nickwildy.fmm.entity.goals.AppleAttackGoal;
+import net.nickwildy.fmm.entity.goals.GoToAppleGoal;
+import net.nickwildy.fmm.item.ModItems;
+import net.nickwildy.fmm.sounds.CustomSounds;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -31,9 +36,8 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BaldiEntity extends HostileEntity implements GeoEntity {
-    protected static final RawAnimation WALK_ANIM = RawAnimation.begin().thenLoop("move.walk");
-
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    public  boolean hasApple = false;
 
     public BaldiEntity(EntityType<? extends BaldiEntity> type, World level)
     {
@@ -54,14 +58,14 @@ public class BaldiEntity extends HostileEntity implements GeoEntity {
 
     @Override
     protected void initGoals() {
-        this.goalSelector.add(2, new SwimGoal(this));
-        this.goalSelector.add(1, new MeleeAttackGoal(this, 1.2D, false));
-        this.goalSelector.add(3, new WanderAroundFarGoal(this, 0.75f));
+        this.goalSelector.add(1, new GoToAppleGoal(this, 1.2D));
+        this.goalSelector.add(2, new AppleAttackGoal(this, 1.2D, false));
+        this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.75f));
+        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(6, new LookAroundGoal(this));
 
-        this.goalSelector.add(4, new LookAroundGoal(this));
-
-        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, ChickenEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        //this.targetSelector.add(5, new ActiveTargetGoal<>(this, ChickenEntity.class, true));
     }
 
 
@@ -104,10 +108,85 @@ public class BaldiEntity extends HostileEntity implements GeoEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         entityData = super.initialize(world, difficulty, spawnReason, entityData);
         float f = difficulty.getClampedLocalDifficulty();
-        if (spawnReason != SpawnReason.SPAWN_ITEM_USE) {
-            this.setCanPickUpLoot(random.nextFloat() < 0.55F * f);
+        this.setCanPickUpLoot(true);
+        this.setLeftHanded(true);
+        //this.setStackInHand(Hand.MAIN_HAND, activeItemStack);
+        if (spawnReason == SpawnReason.SPAWN_ITEM_USE) {
+            this.playSound(CustomSounds.BALDI_OH_HI, 1f, 1f);
         }
         return entityData;
     }
-    //MAKE THE HEAD MOVE
+
+    @Override
+    protected void dropLoot(ServerWorld world, DamageSource damageSource, boolean causedByPlayer) {
+        super.dropLoot(world, damageSource, causedByPlayer);
+        this.dropStack(world, new ItemStack(ModItems.RULER));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (ticksSinceSpawn < Integer.MAX_VALUE) {
+            ticksSinceSpawn++;
+        }
+    }
+
+    private int ticksSinceSpawn = 0;
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ticksSinceSpawn > 45 ? CustomSounds.BALDI_UH_OH : null;
+    }
+
+
+
+    @Override
+    public boolean tryAttack(ServerWorld world, Entity target) {
+        if (target instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
+            DamageSource damageSource = new DamageSource(
+                    world.getRegistryManager()
+                            .getOrThrow(RegistryKeys.DAMAGE_TYPE)
+                            .getEntry(ModDamageTypes.SLAP_DAMAGE.getValue()).get()
+            );
+            target.damage(serverWorld, damageSource, 2.4f);
+        }
+        return super.tryAttack(world, target);
+    }
+
+
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return CustomSounds.BALDI_DEATH;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return CustomSounds.BALDI_HURT;
+    }
+
+    /*protected SoundEvent getStepSound() {
+        return SoundEvents.ENTITY_ZOMBIE_STEP;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        this.playSound(this.getStepSound(), 0.15F, 1.0F);
+    }*/
+
+    @Override
+    public boolean canPickupItem(ItemStack stack) {
+        //FunkyMobsMod.LOGGER.info("Checking item: " + stack.getItem());
+        hasApple = true;
+        return stack.isOf(Items.APPLE) && super.canPickupItem(stack);
+    }
+
+    public boolean hasCollectedApple() {
+        return hasApple;
+    }
+
+    public void setHasCollectedApple(boolean value) {
+        this.hasApple = value;
+    }
 }

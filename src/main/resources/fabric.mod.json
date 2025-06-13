@@ -3,13 +3,13 @@
 	"id": "funky-mobs-mod",
 	"version": "${version}",
 	"name": "Funky Mobs Mod",
-	"description": "Adds NEW and FUNKY Mobs to the game! :D",
+	"description": "Adds NEW and FUNKY Mobs to the game! :D\n \nRuler Model made by Saintza4\nBaldi voice actor: FatalPlex\nOG Baldi Skin Made by Purkler\nOG skin link in mod page",
 	"authors": [
 		"Nick Wildy"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/NickWildy/Funky-Mobs-Mod"
 	},
 	"license": "MIT",
 	"icon": "assets/funky-mobs-mod/icon.png",

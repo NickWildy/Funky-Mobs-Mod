@@ -1,11 +1,7 @@
 package net.nickwildy.fmm.item;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.SpawnEggItem;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -33,9 +29,17 @@ public class ModItems {
     public static final Item BALDI_SPAWN_EGG = register("baldi_spawn_egg",
             settings -> new SpawnEggItem(ModEntities.BALDI, settings), new Item.Settings());
 
-
+    public static final Item RULER = register(
+            "ruler",
+            Item::new,
+            new Item.Settings().sword(ToolMaterial.IRON, 4.0f, 2.0f)
+    );
 
     public static void registerModItems() {
         FunkyMobsMod.LOGGER.info("Registering Mod Items of " + FunkyMobsMod.MOD_ID);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT)
+                .register((itemGroup) -> itemGroup.addAfter(Items.MACE ,ModItems.RULER));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS)
+                .register((itemGroup) -> itemGroup.add(ModItems.BALDI_SPAWN_EGG));
     }
 }
